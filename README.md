@@ -85,6 +85,11 @@ Build and orchestrate AI-driven development workflows (Ralph loops) that iterate
 
 **Use when:** Building complex features requiring multiple AI agent passes, implementing automated development workflows with verification steps, coordinating parallel AI agents for different aspects of a task, creating self-correcting loops that iterate until success criteria met.
 
+#### dogfooding
+Test and validate the skills repository using the skills system itself, practicing "eating your own dog food".
+
+**Use when:** Validating that the skills repository actually works with the skills CLI, ensuring all skills follow Agent Skills specification, running automated validation of skill quality, demonstrating the power of the skills system by using it to test itself.
+
 ### Logging & Observability
 
 #### logging-fundamentals
@@ -293,6 +298,7 @@ Manage incidents and conduct post-mortem analysis to improve system reliability 
 | accessibility-audit | Comprehensive accessibility auditing including WCAG compliance, legal requirements mapping, and user testing with disabilities | [skills/accessibility-audit/](./skills/accessibility-audit/) | [references/README.md](./skills/accessibility-audit/references/README.md) |
 | database-optimization | Optimize database performance, schema design, indexing, and query performance across different database systems | [skills/database-optimization/](./skills/database-optimization/) | [references/README.md](./skills/database-optimization/references/README.md) |
 | incident-response | Manage incidents and conduct post-mortem analysis to improve system reliability and security | [skills/incident-response/](./skills/incident-response/) | [references/README.md](./skills/incident-response/references/README.md) |
+| dogfooding | Test and validate the skills repository using the skills system itself, practicing "eating your own dog food" | [skills/dogfooding/](./skills/dogfooding/) | [references/README.md](./skills/dogfooding/references/README.md) |
 
 ## Local Development
 

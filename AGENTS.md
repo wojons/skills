@@ -212,7 +212,7 @@ echo '{"status": "success", "data": "..."}'
 
 ## Available Skills
 
-This repository contains 60 skills organized into several categories:
+This repository contains 62 skills organized into several categories:
 
 ### Core Skills
 - **git-release**: Create consistent releases and changelogs from merged PRs
@@ -224,6 +224,7 @@ This repository contains 60 skills organized into several categories:
 - **opencode-config**: Configure OpenCode settings using JSON or Markdown files for project-specific or global preferences
 - **best-practice-guide**: Analyze project documentation to identify missing context, then generate and store best practice guides using web search when available
 - **workflow-orchestrator**: Build and orchestrate AI-driven development workflows (Ralph loops) that iterate until success using configurable patterns and multi-agent coordination
+- **dogfooding**: Test and validate the skills repository using the skills system itself, practicing "eating your own dog food"
 
 ### Development Tools
 - **dependency-upgrade**: Comprehensive dependency analysis with breaking change detection and impact analysis
@@ -237,6 +238,7 @@ This repository contains 60 skills organized into several categories:
 
 ### Documentation
 - **api-documentation**: Generate comprehensive API documentation for REST/HTTP, gRPC, GraphQL, and RPC APIs
+- **exhaustive-specification**: Write exhaustive specifications for autonomous AI systems that leave nothing to chance, covering every detail from UI to database schemas with adversarial refinement
 
 ### Cloud Management
 - **cloud-cost-optimization**: Analyze and optimize cloud costs across multiple cloud providers (AWS, Azure, GCP)
