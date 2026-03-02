@@ -1,0 +1,132 @@
+# Build + Verify Pattern
+description: Builder agent with verifier feedback loop
+pattern_type: multi_agent_sequential
+
+# Workflow definition
+workflow:
+  version: "1.0"
+  
+  # Execution settings
+  settings:
+    max_iterations: 20
+    stop_on_success: true
+    escape_hatch: true
+    
+  # Step 1: Building
+  builder:
+    agent: builder
+    type: primary
+    model: anthropic/claude-sonnet-4-20250514
+    
+    task: |
+      Build the requested feature with best practices:
+      - Write clean, readable code
+      - Add appropriate comments
+      - Include error handling
+      - Ensure maintainability
+      
+      When complete, output: <promise>BUILD_COMPLETE</promise>
+      
+    stop_condition: "<promise>BUILD_COMPLETE</promise>"
+    
+    tools:
+      read: true
+      write: true
+      edit: true
+      bash: true
+      webfetch: true
+      
+    permissions:
+      file_edits: allow
+      bash_commands: allow
+      git_commands: ask
+    
+  # Step 2: Verification
+  verifier:
+    agent: verifier
+    type: subagent
+    depends_on: builder
+    
+    task: |
+      Review the implementation:
+      
+      Focus areas:
+      1. Code Quality
+         - Is it readable and maintainable?
+         - Are there any obvious bugs?
+         - Is error handling adequate?
+         
+      2. Testing
+         - Do tests exist?
+         - Do they cover edge cases?
+         - Are they meaningful?
+         
+      3. Best Practices
+         - Does it follow conventions?
+         - Is it performant enough?
+         - Are there security concerns?
+         
+      Output:
+      - If all good: <promise>VERIFIED</promise>
+      - If issues found: <promise>NEEDS_FIXES:[issue1,issue2,...]</promise>
+      
+    tools:
+      read: true
+      bash: ["npm test", "pytest", "cargo test"]
+      
+  # Step 3: Decision Loop
+  loop:
+    conditions:
+      # If verified, we're done
+      - if: "<promise>VERIFIED</promise>"
+        action: success
+        
+      # If needs fixes, retry builder
+      - if: "<promise>NEEDS_FIXES:"
+        action: retry
+        
+      # Otherwise, ask user
+      - action: manual_review
+        
+    on_retry:
+      # Include verifier feedback in next iteration
+      context:
+        - previous_output
+        - verifier_feedback
+        - suggested_fixes
+        
+    on_manual_review:
+      # Let user decide
+      message: "Verifier found issues. Review feedback and decide?"
+        
+  # Success criteria
+  success:
+    detect:
+      - "<promise>VERIFIED</promise>"
+      - "All checks passed"
+    verify:
+      - run_tests
+      - lint
+      
+  # Failure handling
+  on_failure:
+    action: stop
+    message: "Failed to satisfy verification after {iterations} attempts"
+    
+# Server settings
+server:
+  port: 4242
+  auto_start: true
+  web_ui: false
+
+# Logging
+logging:
+  level: info
+  save_conversations: true
+  save_directory: ./ralph-logs
+
+# Safety
+safety:
+  sandbox: true
+  max_runtime: 3600
+  requires_confirmation: true

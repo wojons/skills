@@ -1,0 +1,224 @@
+# Multi-Agent Pipeline Pattern
+description: Parallel execution with 3 builders, 3 verifiers, and merge planning
+pattern_type: multi_agent_parallel
+
+# Workflow definition
+workflow:
+  version: "1.0"
+  
+  # Execution settings
+  settings:
+    max_iterations: 20
+    stop_on_success: true
+    escape_hatch: true
+    parallel_workers: 3
+    
+  # Step 1: Planning
+  plan:
+    agent: planner
+    type: primary
+    model: anthropic/claude-sonnet-4-20250514
+    
+    task: |
+      Analyze the task and create 3 subtasks:
+      1. Frontend components
+      2. Backend integration
+      3. Testing/CI
+      
+      Output each subtask as a JSON array.
+      
+    output_format: json
+    tools:
+      read: true
+      webfetch: true
+      
+  # Step 2: Parallel Building (3 agents)
+  builders:
+    builder_frontend:
+      agent: builder-frontend
+      type: subagent
+      parallel: true
+      depends_on: plan
+      
+      task: |
+        Build the frontend components based on subtask 1.
+        Output: <promise>FRONTEND_COMPLETE</promise>
+        
+      stop_condition: "<promise>FRONTEND_COMPLETE</promise>"
+      tools:
+        read: true
+        write: true
+        edit: true
+        bash: true
+        
+    builder_backend:
+      agent: builder-backend
+      type: subagent
+      parallel: true
+      depends_on: plan
+      
+      task: |
+        Build the backend integration based on subtask 2.
+        Output: <promise>BACKEND_COMPLETE</promise>
+        
+      stop_condition: "<promise>BACKEND_COMPLETE</promise>"
+      tools:
+        read: true
+        write: true
+        edit: true
+        bash: true
+        
+    builder_tests:
+      agent: builder-tests
+      type: subagent
+      parallel: true
+      depends_on: plan
+      
+      task: |
+        Build the testing/CI setup based on subtask 3.
+        Output: <promise>TESTS_COMPLETE</promise>
+        
+      stop_condition: "<promise>TESTS_COMPLETE</promise>"
+      tools:
+        read: true
+        write: true
+        edit: true
+        bash: true
+        
+  # Step 3: Parallel Verification (3 agents)
+  verifiers:
+    verifier_frontend:
+      agent: verify-frontend
+      type: subagent
+      parallel: true
+      depends_on: builder_frontend
+      
+      task: |
+        Verify the frontend implementation.
+        Check for:
+        - Component quality
+        - Accessibility
+        - Performance
+        - Browser compatibility
+        
+        Output: <promise>FRONTEND_VERIFIED</promise> or <promise>FRONTEND_NEEDS_FIXES:...</promise>
+        
+      tools:
+        read: true
+        bash: [test_lint, test_build]
+        
+    verifier_backend:
+      agent: verify-backend
+      type: subagent
+      parallel: true
+      depends_on: builder_backend
+      
+      task: |
+        Verify the backend implementation.
+        Check for:
+        - API correctness
+        - Error handling
+        - Security issues
+        - Database integrity
+        
+        Output: <promise>BACKEND_VERIFIED</promise> or <promise>BACKEND_NEEDS_FIXES:...</promise>
+        
+      tools:
+        read: true
+        bash: [test_api, test_security]
+        
+    verifier_tests:
+      agent: verify-tests
+      type: subagent
+      parallel: true
+      depends_on: builder_tests
+      
+      task: |
+        Verify the testing infrastructure.
+        Check for:
+        - Test coverage
+        - Test quality
+        - CI/CD integration
+        
+        Output: <promise>TESTS_VERIFIED</promise> or <promise>TESTS_NEED_FIXES:...</promise>
+        
+      tools:
+        read: true
+        bash: [run_tests, check_coverage]
+        
+  # Step 4: Merge Results
+  merge:
+    agent: merger
+    type: subagent
+    depends_on: [verifier_frontend, verifier_backend, verifier_tests]
+    
+    task: |
+      Review all verification results:
+      {frontend_result}
+      {backend_result}
+      {tests_result}
+      
+      Merge into a unified report.
+      If all verified, output: <promise>ALL_VERIFIED</promise>
+      otherwise, provide detailed feedback.
+      
+    output_format: text
+    tools:
+      read: true
+      
+  # Step 5: Planning Decision
+  decide:
+    agent: planner
+    type: primary
+    depends_on: merge
+    
+    task: |
+      Based on the merge results:
+      
+      - If <promise>ALL_VERIFIED</promise>, declare success
+      - Otherwise, decide:
+        1. Which agents need to retry?
+        2. What specific fixes needed?
+        3. Should we adjust the plan?
+        
+      Output either:
+      - <promise>SUCCESS</promise>
+      - <promise>RETRY_FRONTEND:fixes...</promise>
+      - <promise>RETRY_BACKEND:fixes...</promise>
+      - <promise>RETRY_PLAN:new_approach...</promise>
+      
+    stop_condition: "<promise>SUCCESS</promise>"
+    
+  # Final result
+  success:
+    detect:
+      - "<promise>SUCCESS</promise>"
+    report: |
+      Build complete!
+      - Frontend: ✓
+      - Backend: ✓
+      - Tests: ✓
+
+# Server settings
+server:
+  port: 4242
+  auto_start: true
+  web_ui: false
+
+# Session management
+sessions:
+  create_mode: parallel
+  cleanup_on_exit: true
+  save_conversations: true
+
+# Logging
+logging:
+  level: info
+  directory: ./ralph-logs
+  format: json
+
+# Safety
+safety:
+  sandbox: true
+  max_runtime: 7200  # 2 hours
+  max_parallel_sessions: 5

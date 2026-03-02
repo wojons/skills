@@ -1,0 +1,81 @@
+# Builder Only Pattern
+description: Simple build loop - retry until success or max iterations
+pattern_type: single_agent
+
+# Workflow definition
+workflow:
+  version: "1.0"
+  
+  # Execution settings
+  settings:
+    max_iterations: 20
+    stop_on_success: true
+    escape_hatch: true
+    
+  # Single agent workflow
+  loop:
+    agent: builder
+    type: primary
+    model: anthropic/claude-sonnet-4-20250514
+    
+    # What this agent does
+    task: |
+      Build the requested feature.
+      When complete, output: <promise>BUILD_COMPLETE</promise>
+      
+      Requirements:
+      - Write production code
+      - Add tests
+      - Fix any errors
+      - Ensure tests pass
+      
+    # Stop detection
+    stop_condition: "<promise>BUILD_COMPLETE</promise>"
+    
+    # Tools available
+    tools:
+      read: true
+      write: true
+      edit: true
+      bash: true
+      webfetch: true
+    
+    # Permissions
+    permissions:
+      file_edits: allow
+      bash_commands: allow
+      git_commands: ask
+    
+  # Success criteria
+  success:
+    detect:
+      - "<promise>BUILD_COMPLETE</promise>"
+      - "All tests passed"
+    verify:
+      - run_tests
+      
+  # Failure handling
+  on_failure:
+    action: retry
+    with_context:
+      - previous_output
+      - error_messages
+      - suggestions
+
+# Server settings
+server:
+  port: 4242
+  auto_start: true
+  web_ui: false
+
+# Logging
+logging:
+  level: info
+  save_conversations: true
+  save_directory: ./ralph-logs
+
+# Safety
+safety:
+  sandbox: true
+  max_runtime: 3600  # 1 hour
+  requires_confirmation: false
