@@ -10,84 +10,139 @@ metadata:
 
 # Ralph Wiggum Skill
 
-A meta-skill for building Ralph loops - customizable AI-driven development workflows that leverage OpenCode's HTTP server and SSE streaming.
-
-## Overview
-
-This skill enables users to create and execute Ralph loops through:
-- Configurable workflow patterns (YAML-based)
-- Multi-agent composition (sequential, parallel, or hybrid)
-- OpenCode server integration (opencode serve with /docs API)
-- Stop hook patterns and completion promises
-- Custom agent orchestration
+Generate working Ralph loops - AI-driven development workflows that iterate until tasks succeed.
 
 ## Quick Start
 
-1. Load this skill in your OpenCode project
-2. Run the workflow builder agent to configure your loop
-3. Choose from patterns or create custom workflows
-4. The skill generates the necessary agents, tools, and configs
+```bash
+# Generate a working Ralph loop
+bash scripts/generate-ralph-loop.sh python builder-only ./my-loop
 
-## Architecture
+cd my-loop
+./run.sh
+```
 
-### Skill Components
-- **agents/**: Ready-to-use agent configurations
-- **tools/**: Server integration and workflow orchestration
-- **generators/**: YAML-to-config and loop builder utilities
+## What This Skill Provides
 
-### Resources
-- **specs/**: OpenCode server API, streaming patterns, workflow composition
-- **patterns/**: Pre-configured YAML workflow templates
-- **examples/**: Real-world usage scenarios
-- **templates/**: Schema definitions and config templates
+### 1. Runnable Loop Generator
+**Script**: `scripts/generate-ralph-loop.sh`
 
-## Workflow Options
+Generates complete, working loop implementations:
 
-### Built-in Patterns
-- `builder-only`: Simple build until success
-- `build-verify`: Build → Verify → Retry loop
-- `build-verify-plan`: Build → Verify → Plan → Retry
-- `multi-agent-pipeline`: Parallel agent execution with merging
-- `custom`: User-defined YAML workflow
+```bash
+# Single agent: build until success
+bash scripts/generate-ralph-loop.sh python builder-only ./my-loop
 
-### Agent Types
-- **Primary**: Main conversational agents (Build, Plan)
-- **Subagent**: Specialized helpers (General, Explore, Verify, Merge)
-- **Custom**: User-defined roles
+# Two agents: build → verify → retry
+bash scripts/generate-ralph-loop.sh python build-verify ./my-loop
 
-### Execution Modes
-- **Sequential**: One agent at a time
-- **Parallel**: Multiple agents run simultaneously
-- **Hybrid**: Mix of sequential and parallel
-- **Conditional**: Branch based on conditions
+# Three agents: plan → build → verify
+bash scripts/generate-ralph-loop.sh python build-verify-plan ./my-loop
 
-## Configuration
+# Node.js version
+bash scripts/generate-ralph-loop.sh node builder-only ./my-loop
+```
 
-Edit `ralph-wiggum.yaml` to customize:
-- Workflow patterns
-- Agent permissions
-- Stop conditions
-- Iteration limits
-- Server settings
+Output includes:
+- Executable loop implementation (`loop.py` or `loop.ts`)
+- Configuration file (`LOOP_CONFIG.yaml`)
+- Dependencies (`requirements.txt` or `package.json`)
+- Run script (`run.sh`)
+
+### 2. Configurable Behavior
+
+Edit `LOOP_CONFIG.yaml` to customize:
+
+```yaml
+workflow:
+  name: "my-task"
+  max_iterations: 20
+  
+  agent:
+    role: "builder"
+    tools: ["read", "write", "edit", "bash", "question"]
+    stop_condition: "<promise>TASK_COMPLETE</promise>"
+```
+
+### 3. Three Proven Patterns
+
+#### Pattern 1: Builder Only
+One agent builds, retries until success. Fast, simple, low cost.
+
+#### Pattern 2: Build + Verify
+Builder creates → Verifier checks quality → Retry if fails. Better quality.
+
+#### Pattern 3: Build + Verify + Plan
+Planner plans → Builder implements → Verifier checks. Best for complex tasks.
+
+## How Loops Work
+
+1. **Start loop** with defined pattern
+2. **Agent executes** (builds, verifies, plans)
+3. **Check success** - tests pass? code compiles? feature works?
+4. **If success** → loop completes
+5. **If failure** → retry next iteration
+6. **Stop at** max iterations if not complete
+
+## Configuration Examples
+
+### Simple Loop:
+```yaml
+workflow:
+  max_iterations: 20
+  stop_on_success: true
+  
+  task:
+    description: "Build feature X"
+    success_criteria:
+      - "Tests pass"
+      - "Code compiles"
+```
+
+### Build + Verify:
+```yaml
+agents:
+  builder:
+    role: "Build the feature"
+    stop_condition: "<promise>BUILT</promise>"
+    
+  verifier:
+    role: "Verify quality"
+    stop_condition: "<promise>VERIFIED</promise>"
+    
+sequence:
+  - agent: builder
+  - agent: verifier
+```
 
 ## Usage
 
 ```bash
-# Start the workflow builder
-@workflow-builder
+# Generate loop
+bash scripts/generate-ralph-loop.sh python builder-only ./auth-loop
 
-# Questions help define:
-# - What type of loop?
-# - Success conditions?
-# - Max iterations?
-# - Parallel or sequential?
-# - Which agents involved?
+# Edit config
+vim ./auth-loop/LOOP_CONFIG.yaml
+
+# Run loop
+cd ./auth-loop
+./run.sh
 ```
 
-## Safety
+## Implementation Details
 
-Always configure:
-- Max iterations (escape hatches)
-- Sandbox environment
-- Permission controls
-- Stop hook verification
+The generated loops include:
+
+- **Iteration tracking**: Counts and displays progress
+- **Success detection**: Checks tests pass, code compiles, etc.
+- **Configuration driven**: All behavior from YAML config
+- **Error handling**: Graceful failure with iteration limits
+- **Dependency management**: Auto-installs required packages
+
+## Notes
+
+- Loops run until success or max_iterations reached
+- Success depends on your tests/checks passing
+- Edit LOOP_CONFIG.yaml to change behavior
+- Use simple patterns first, scale up as needed
+- Generated code actually runs, not just demos
