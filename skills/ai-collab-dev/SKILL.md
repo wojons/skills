@@ -28,6 +28,32 @@ Use this methodology when starting a new project that will be built primarily or
 - Explain *why* each step matters, not just what to do
 - Prepare your project for a Ralph loop so the build agent can run without you
 
+## Workflow Overview
+
+```mermaid
+flowchart TD
+    S1["1. North Star\n(Web AI)"]
+    S2["2. Handoff to\nCode AI"]
+    S3["3. Chunk\nConversation"]
+    S4["4. Loop on\nMissing Spec"]
+    S5["5. Drill into\nDetails"]
+    S6["6. Ralph Loop\nBriefing"]
+    S7["7. Run /init\n(AGENTS.md)"]
+    S8["8. Build Loop\n& PROMPTs"]
+    S9["9. Baby-Step\nTODO List"]
+    S10["10. Run Loop\nSteer from Outside"]
+
+    S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8 --> S9 --> S10
+
+    S10 -->|"spec gap found"| S4
+    S10 -->|"details missing"| S5
+    S10 -->|"AGENTS.md stale"| S7
+    S10 -->|"PROMPT needs fix"| S8
+    S10 -->|"TODO too vague"| S9
+```
+
+Step 10 is not the end — it is the steering point. When the loop stalls or a requirement changes, go back to whichever earlier step owns the problem. Never edit the build agent session directly.
+
 ## The 10-Step Methodology
 
 ### Step 1 — Start outside the editor
@@ -187,14 +213,21 @@ Start the Ralph loop:
 python ralph-loop.py loop --commit
 ```
 
-When changes are needed — because the agent got stuck, a requirement changed, or something broke — **do not intervene in the agent session directly**. Instead:
+When changes are needed — because the agent got stuck, a requirement changed, or something broke — **do not intervene in the agent session directly**. Instead, go back to whichever earlier step owns the problem:
 
-1. Update `TODO.md` with clearer instructions
-2. Update the relevant `PROMPT.md` with additional context
-3. Update `SPEC.md` if the requirement itself changed
-4. Let the loop pick up on the next iteration
+| Symptom | Go back to |
+|---|---|
+| Agent asks questions or guesses wrong | Step 4 — spec has gaps, run another missing-spec loop |
+| Agent makes wrong implementation choices | Step 5 — drill deeper on that area |
+| Agent lacks project context between runs | Step 7 — update AGENTS.md |
+| Agent misunderstands its role or phase | Step 8 — rewrite the relevant PROMPT.md |
+| Agent stalls or marks wrong tasks done | Step 9 — rewrite the TODO item with clearer success criteria |
+
+After updating the relevant file, let the loop pick up on the next iteration. Do not restart from scratch — the loop will read the updated files automatically.
 
 **The core principle**: The build agent only ever sees messages written by the other AI. Your writing style, syntax errors, and stream-of-consciousness are excluded from what it reads. This keeps the signal clean and the context usable.
+
+Step 10 is not a finish line — it is a steering loop. You will visit earlier steps multiple times on any non-trivial project. That is expected and correct.
 
 ## Scripts
 
