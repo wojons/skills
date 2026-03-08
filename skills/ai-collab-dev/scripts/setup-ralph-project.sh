@@ -26,9 +26,11 @@ fi
 
 echo "Setting up Ralph loop project in $PROJECT_DIR/" >&2
 mkdir -p "$PROJECT_DIR"
-mkdir -p "$PROJECT_DIR/memory-bank/inbox/builder"
-mkdir -p "$PROJECT_DIR/memory-bank/inbox/verifier"
-mkdir -p "$PROJECT_DIR/memory-bank/inbox/planner"
+mkdir -p "$PROJECT_DIR/.memory-bank/inbox/builder"
+mkdir -p "$PROJECT_DIR/.memory-bank/inbox/verifier"
+mkdir -p "$PROJECT_DIR/.memory-bank/inbox/planner"
+mkdir -p "$PROJECT_DIR/.memory-bank/system"  # For auto-generated rules/patterns
+mkdir -p "$PROJECT_DIR/.memory-bank/evolution"  # For decision logs
 mkdir -p "$PROJECT_DIR/.ralph/logs"
 
 # --- TODO.md ---
@@ -142,7 +144,7 @@ EOF
 echo "  Created AGENTS.md" >&2
 
 # --- Builder PROMPT.md ---
-cat > "$PROJECT_DIR/memory-bank/inbox/builder/PROMPT.md" << 'EOF'
+cat > "$PROJECT_DIR/.memory-bank/inbox/builder/PROMPT.md" << 'EOF'
 # Builder Agent
 
 You are the builder. Your job is to implement tasks from TODO.md.
@@ -174,11 +176,54 @@ When done, report:
 - Which task you completed
 - What files you changed
 - Test results
+
+## Memory Bank Management
+
+You maintain a `.memory-bank/` directory that improves itself:
+
+### Your Role in Self-Expansion
+
+1. **Save new learnings**: After each task, ask: "What did I learn that future agents need?"
+   - Technical decisions → Propose additions to `.memory-bank/system/DECISION_LOG.md`
+   - Context patterns you needed → Propose `.memory-bank/system/CONTEXT_PATTERNS.md`
+   - Where you looked first vs. where answer was → Propose `.memory-bank/system/RETRIEVAL_GUIDE.md` update
+
+2. **Organize when cluttered**: If you see 20+ files in inbox/, propose reorganization:
+   - Suggest new structure in `.memory-bank/evolution/DECISION_LOG.md`
+   - Explain *why* (retrieval speed, logical grouping, etc.)
+
+3. **Detect gaps**: If you search for something and can't find it:
+   - Note the search pattern: "Looked for X in Y, found in Z"
+   - Propose addition to `.memory-bank/system/LEARNED_HEURISTICS.md`
+   - Suggest where the missing info should live
+
+4. **Evolve rules**: As patterns emerge, propose updates to `.memory-bank/system/MEMORY_RULES.md`:
+   - "Previously: all docs in inbox/. Pattern: domain-specific docs need domains/."
+
+### Self-Expanding Memory Bank Structure
+
+```
+.memory-bank/
+├── inbox/                    # You read from here
+│   ├── builder/PROMPT.md     # Your instructions (this file)
+│   ├── verifier/PROMPT.md
+│   └── planner/PROMPT.md
+├── system/                   # You maintain these (auto-generated)
+│   ├── MEMORY_RULES.md      # How to organize and save
+│   ├── CONTEXT_PATTERNS.md  # Common context templates
+│   ├── RETRIEVAL_GUIDE.md   # Where to find things
+│   └── DECISION_LOG.md      # Why structure changed
+└── evolution/              # You maintain these (auto-generated)
+    ├── DECISION_LOG.md      # Structural changes
+    └── LEARNED_HEURISTICS.md # Discovered patterns
+```
+
+The memory bank should feel like a colleague left you notes — not a filing cabinet you have to decode.
 EOF
-echo "  Created memory-bank/inbox/builder/PROMPT.md" >&2
+echo "  Created .memory-bank/inbox/builder/PROMPT.md" >&2
 
 # --- Verifier PROMPT.md ---
-cat > "$PROJECT_DIR/memory-bank/inbox/verifier/PROMPT.md" << 'EOF'
+cat > "$PROJECT_DIR/.memory-bank/inbox/verifier/PROMPT.md" << 'EOF'
 # Verifier Agent
 
 You are the verifier. Your job is to confirm that completed work meets requirements.
@@ -206,14 +251,35 @@ You are the verifier. Your job is to confirm that completed work meets requireme
 
 Report:
 - Test results (pass/fail/error counts)
-- Whether the success condition was met
+- Whether the success condition is met
 - Any regressions found
 - Verdict: PASS or FAIL
+
+## Memory Bank Management
+
+You maintain a `.memory-bank/` directory that improves itself:
+
+### Your Role in Self-Expansion
+
+1. **Save verification patterns**: When you find common failure modes:
+   - "Tests pass but integration fails → check .memory-bank/system/CONTEXT_PATTERNS.md for 'integration testing'"
+   - Propose updates to `.memory-bank/system/LEARNED_HEURISTICS.md`
+
+2. **Track spec drift**: If implementation diverges from spec:
+   - Document in `.memory-bank/evolution/DECISION_LOG.md`
+   - Note whether drift was intentional or a bug
+
+3. **Improve retrieval**: If you couldn't find test requirements:
+   - Propose `.memory-bank/system/RETRIEVAL_GUIDE.md` update: "For test expectations, check AGENTS.md 'How to Verify' section"
+
+4. **Organize when cluttered**: Propose structure improvements to `.memory-bank/evolution/DECISION_LOG.md`
+
+The memory bank learns from every verification cycle. Leave it better than you found it.
 EOF
-echo "  Created memory-bank/inbox/verifier/PROMPT.md" >&2
+echo "  Created .memory-bank/inbox/verifier/PROMPT.md" >&2
 
 # --- Planner PROMPT.md ---
-cat > "$PROJECT_DIR/memory-bank/inbox/planner/PROMPT.md" << 'EOF'
+cat > "$PROJECT_DIR/.memory-bank/inbox/planner/PROMPT.md" << 'EOF'
 # Planner Agent
 
 You are the planner. You are called when the builder is stuck or the loop is stalled.
@@ -243,8 +309,134 @@ Report:
 - What you identified as the cause of the stall
 - What you changed in TODO.md
 - What the builder should do next
+
+## Memory Bank Management
+
+You maintain a `.memory-bank/` directory that improves itself:
+
+### Your Role in Self-Expansion (Critical)
+
+As the planner, you are uniquely positioned to improve the memory system. When you detect patterns:
+
+1. **Ambiguity patterns**: If multiple TODO items are unclear in the same way:
+   - Propose `.memory-bank/system/CONTEXT_PATTERNS.md` template: "TODO clarity checklist"
+   - Update `.memory-bank/system/MEMORY_RULES.md`: "All TODOs must include success condition"
+
+2. **Reorganization triggers**: When inbox/ gets cluttered:
+   - Document proposed structure in `.memory-bank/evolution/DECISION_LOG.md`
+   - Explain retrieval benefits: "Grouping by domain reduces search time"
+
+3. **Missing context patterns**: If builders keep asking for same info:
+   - Propose `.memory-bank/system/RETRIEVAL_GUIDE.md` entry: "For auth questions, check SPEC.md section 4.2"
+   - Suggest new file creation if pattern warrants it
+
+4. **Evolve the system**: Propose updates to `.memory-bank/system/MEMORY_RULES.md`:
+   - "Discovered pattern: API endpoint docs accumulate in inbox/ → create api/ subdirectory"
+   - "Retrieval heuristic: When user mentions 'fix', previous context usually includes error log"
+
+### Planner-Specific Memory Responsibilities
+
+- **Create missing system files**: If MEMORY_RULES.md doesn't exist, create it with initial rules based on what you've learned
+- **Propose structural changes**: When you see 20+ files, propose categorization
+- **Document decisions**: Every reorganization proposal goes in evolution/DECISION_LOG.md with rationale
+- **Learn from stalls**: If loop stalls 3+ times on same type of issue, that indicates a memory system gap
+
+The planner shapes how knowledge flows. Design the memory bank so future agents don't get stuck where past agents did.
 EOF
-echo "  Created memory-bank/inbox/planner/PROMPT.md" >&2
+echo "  Created .memory-bank/inbox/planner/PROMPT.md" >&2
+
+# --- Create initial self-expanding memory system files ---
+
+# MEMORY_RULES.md
+cat > "$PROJECT_DIR/.memory-bank/system/MEMORY_RULES.md" << 'EOF'
+# Memory Rules
+
+How this memory bank organizes and maintains itself.
+
+## Auto-Expansion Triggers
+
+- **20+ files in inbox/** → Propose categorization by domain or type
+- **Repeated searches** → Add retrieval shortcut to RETRIEVAL_GUIDE.md
+- **Ambiguous file purposes** → Create CLARIFICATION.md explaining distinctions
+- **New information type** → Create template in CONTEXT_PATTERNS.md
+
+## Directory Purposes
+
+- `inbox/` - Agent PROMPT.md files and incoming docs
+- `system/` - Auto-generated: rules, patterns, retrieval guides
+- `evolution/` - Auto-generated: structural changes and learnings
+
+## Maintenance Responsibilities
+
+Each agent role maintains:
+- **Builder**: Saves technical decisions, proposes reorganization
+- **Verifier**: Tracks verification patterns, notes spec drift
+- **Planner**: Creates system files, proposes structural changes, documents decisions
+
+## Growth Principle
+
+The memory bank improves itself. Agents should leave it better than they found it.
+EOF
+echo "  Created .memory-bank/system/MEMORY_RULES.md" >&2
+
+# RETRIEVAL_GUIDE.md
+cat > "$PROJECT_DIR/.memory-bank/system/RETRIEVAL_GUIDE.md" << 'EOF'
+# Retrieval Guide
+
+How to find information in this memory bank.
+
+## Quick Reference
+
+| Looking for... | Check first |
+|---|---|
+| Project requirements | `SPEC.md` |
+| How to run/tests | `AGENTS.md` |
+| Current tasks | `TODO.md` |
+| Why decision was made | `.memory-bank/evolution/DECISION_LOG.md` |
+| Common patterns | `.memory-bank/system/CONTEXT_PATTERNS.md` |
+| Your role instructions | `.memory-bank/inbox/<your-role>/PROMPT.md` |
+
+## Search Strategy
+
+1. Check RETRIEVAL_GUIDE.md for direct link
+2. Search CONTEXT_PATTERNS.md for template
+3. Check inbox/ for relevant docs
+4. Ask in TODO.md note if not found
+
+## Contributing
+
+When you find information in an unexpected place, add it here so future agents find it faster.
+EOF
+echo "  Created .memory-bank/system/RETRIEVAL_GUIDE.md" >&2
+
+# CONTEXT_PATTERNS.md
+cat > "$PROJECT_DIR/.memory-bank/system/CONTEXT_PATTERNS.md" << 'EOF'
+# Context Patterns
+
+Common information types and where they belong.
+
+## Patterns
+
+### Technical Decisions
+- **What**: Why we chose X over Y
+- **Where**: `.memory-bank/evolution/DECISION_LOG.md`
+- **Template**: Date, decision, alternatives considered, rationale
+
+### API Documentation
+- **What**: Endpoint specs, request/response schemas
+- **Where**: Inbox initially, then `SPEC.md` section 4+
+- **Template**: See SPEC.md API Design section
+
+### Error Context
+- **What**: What went wrong and how it was fixed
+- **Where**: `.memory-bank/evolution/LEARNED_HEURISTICS.md`
+- **Template**: Error pattern, root cause, fix, prevention
+
+## Adding New Patterns
+
+When you encounter a new information type three or more times, propose a pattern entry here.
+EOF
+echo "  Created .memory-bank/system/CONTEXT_PATTERNS.md" >&2
 
 # --- Try to copy ralph-loop.py from skill if available ---
 SKILL_LOOP=""
@@ -282,11 +474,17 @@ fi
 echo "" >&2
 echo "Project scaffold created in $PROJECT_DIR/" >&2
 echo "" >&2
+echo "Self-expanding memory bank initialized:" >&2
+echo "  - .memory-bank/system/MEMORY_RULES.md - Rules for organization" >&2
+echo "  - .memory-bank/system/RETRIEVAL_GUIDE.md - How to find things" >&2
+echo "  - .memory-bank/system/CONTEXT_PATTERNS.md - Common patterns" >&2
+echo "" >&2
 echo "Next steps:" >&2
 echo "  1. Fill in SPEC.md with your exhaustive project specification" >&2
 echo "  2. Update AGENTS.md with your tech stack and conventions" >&2
 echo "  3. Write baby-step TODO items with clear success conditions" >&2
 echo "  4. Review all PROMPT.md files for your specific project" >&2
-echo "  5. Run: python ralph-loop.py loop --commit" >&2
+echo "  5. The memory bank will expand itself as agents work - see MEMORY_RULES.md" >&2
+echo "  6. Run: python ralph-loop.py loop --commit" >&2
 
 echo "{\"status\": \"success\", \"project\": \"$PROJECT_DIR\"}"

@@ -168,10 +168,18 @@ project/
 ├── TODO.md                    # Tasks in - [ ] format, ordered
 ├── SPEC.md                    # The exhaustive spec from steps 1-6
 ├── AGENTS.md                  # Agent context from step 7
-├── memory-bank/inbox/
-│   ├── builder/PROMPT.md      # Implements TODO items
-│   ├── verifier/PROMPT.md     # Runs tests, checks requirements
-│   └── planner/PROMPT.md      # Updates TODO when stuck
+├── .memory-bank/
+│   ├── inbox/
+│   │   ├── builder/PROMPT.md      # Implements TODO items
+│   │   ├── verifier/PROMPT.md     # Runs tests, checks requirements
+│   │   └── planner/PROMPT.md      # Updates TODO when stuck
+│   ├── system/                    # Auto-generated: rules, roles, patterns
+│   │   ├── MEMORY_RULES.md        # How the system learns and organizes
+│   │   ├── CONTEXT_PATTERNS.md    # Detected context patterns and templates
+│   │   └── RETRIEVAL_GUIDE.md     # How to find information in the bank
+│   └── evolution/                 # Auto-generated: how memory has grown
+│       ├── DECISION_LOG.md        # Why memory structure changed
+│       └── LEARNED_HEURISTICS.md  # Patterns the system discovered
 └── ralph-loop.py              # Generated loop runner
 ```
 
@@ -271,6 +279,78 @@ my-project/
 ```
 
 The loop can run without you present. When it finishes, you have working code.
+
+## Self-Expanding Memory Bank
+
+The `.memory-bank/` directory is not just storage — it is a **self-improving system**. The prompt files provide the seed, but the system grows its own rules, roles, and organizational patterns based on accumulated project knowledge.
+
+### How Self-Expansion Works
+
+**1. Seed Structure (You Provide)**
+```
+.memory-bank/
+├── inbox/
+│   ├── builder/PROMPT.md      # Role and initial guidance
+│   ├── verifier/PROMPT.md
+│   └── planner/PROMPT.md
+```
+
+**2. Auto-Generated System Files (AI Maintains)**
+
+As the project accumulates information, the AI creates and maintains:
+
+- **MEMORY_RULES.md** — Rules for what to save, where, and why. Starts from prompt guidance but expands based on patterns seen.
+- **CONTEXT_PATTERNS.md** — Templates for common context types the project uses.
+- **RETRIEVAL_GUIDE.md** — How to find things: "For API questions, check SPEC.md section 4; for conventions, check AGENTS.md lines 20-40."
+- **DECISION_LOG.md** — Why the memory structure changed: "Created `domain/` subdirectory after discovering 15+ API endpoint docs were cluttering root."
+- **LEARNED_HEURISTICS.md** — Patterns the system discovered: "When TODO item mentions 'fix', previous context usually includes an error log."
+
+**3. Expansion Triggers**
+
+The system auto-expands when:
+
+- **Information volume crosses threshold**: "30+ files in inbox/ → create subdirectories by domain"
+- **Retrieval patterns detected**: "User asks for 'config' → 90% of time they want ENV_VARS.md"
+- **Ambiguity detected**: Two files seem to serve same purpose → create CLARIFICATION.md explaining distinction
+- **New information type**: First time seeing a decision record → create DECISION_LOG.md template
+
+**4. User Steering (Not Control)**
+
+You don't micromanage the memory structure. Instead:
+
+- **Ask for rationale**: "Why did you create a `domain/` subdirectory?"
+- **Request consolidation**: "The split between `api/` and `endpoints/` is confusing — merge them."
+- **Suggest patterns**: "We keep asking about auth — create a canonical AUTH_GUIDE.md."
+
+The AI decides *how* to implement your guidance (which subdirectory, what format) based on accumulated MEMORY_RULES.
+
+**5. Prompt Template for Self-Expanding Memory**
+
+Add to your PROMPT.md files:
+
+```markdown
+## Memory Bank Management
+
+You maintain a `.memory-bank/` directory that improves itself:
+
+1. **Save new learnings**: After each task, ask: "What did I learn that future agents need?"
+   - Technical decisions → save to `system/DECISION_LOG.md`
+   - Context patterns → save to `system/CONTEXT_PATTERNS.md`
+   - Retrieval shortcuts → save to `system/RETRIEVAL_GUIDE.md`
+
+2. **Organize when cluttered**: If a directory has 20+ files, suggest a reorganization.
+   - Propose new structure in `system/DECISION_LOG.md`
+   - Wait for user confirmation before moving files
+
+3. **Detect gaps**: If you can't find something, note it:
+   - "Searched for API rate limits → not found. Should add to SPEC.md?"
+   - Save search pattern to `system/LEARNED_HEURISTICS.md`: "Common missing: rate limiting details"
+
+4. **Evolve rules**: As patterns emerge, update MEMORY_RULES.md:
+   - "Previously: save all docs to inbox/. Now: categorize by domain."
+
+The memory bank should feel like a colleague left you notes — not a filing cabinet you have to decode.
+```
 
 ## Notes
 
