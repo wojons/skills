@@ -337,13 +337,26 @@ class PhaseRunner:
         working_dir: Path = PROJECT_ROOT,
         capture_output: bool = True
     ) -> Tuple[bool, str]:
-        """Run OpenCode with an agent.
+        """Run OpenCode with a specialized agent using root-level PROMPT files.
         
+        Args:
+            agent: Agent type ('builder', 'verifier', or 'planner')
+            phase_name: Name of the phase for logging
+            working_dir: Working directory
+            capture_output: Whether to capture output for commit messages
+            
         Returns:
             Tuple of (success, output) where output is the captured OpenCode output
         """
         log_file = self.log_manager.get_log_file(phase_name)
-        inbox_path = f"memory-bank/inbox/{agent}/"
+        # Map agent names to root-level PROMPT files
+        prompt_files = {
+            'builder': 'PROMPT-BUILDER.md',
+            'verifier': 'PROMPT-VERIFIER.md',
+            'planner': 'PROMPT-PLANNER.md'
+        }
+        prompt_file = prompt_files.get(agent, f'PROMPT-{agent.upper()}.md')
+        prompt_path = working_dir / prompt_file
         output_lines: List[str] = []
         
         self.logger.phase("═" * 60)
@@ -352,11 +365,18 @@ class PhaseRunner:
         self.logger.phase("═" * 60)
         
         try:
-            prompt = "Follow the instructions in your PROMPT.md. Execute the tasks it tells you to do."
+            # Read the specialized PROMPT file from root
+            if not prompt_path.exists():
+                self.logger.error(f"PROMPT file not found: {prompt_path}")
+                self.logger.error(f"Make sure {prompt_file} exists in the project root")
+                return False, ""
             
+            prompt_content = prompt_path.read_text()
+            
+            # Run with the PROMPT content
             with open(log_file, 'w') as log_fh:
                 process = subprocess.Popen(
-                    ["opencode", "run", "--agent", agent, prompt],
+                    ["opencode", "run", "--agent", agent, prompt_content],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     cwd=working_dir,

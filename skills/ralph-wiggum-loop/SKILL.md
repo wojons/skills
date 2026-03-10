@@ -117,19 +117,18 @@ For the generated loop to work, your project needs:
 
 ```
 project/
-├── TODO.md               # Tasks with - [ ] format
-├── memory-bank/
-│   └── inbox/
-│       ├── builder/
-│       │   └── PROMPT.md      # Builder instructions
-│       ├── verifier/
-│       │   └── PROMPT.md      # Verifier instructions
-│       └── planner/
-│           └── PROMPT.md      # Planner instructions
+├── TODO.md                    # Tasks with - [ ] format
+├── PROMPT-BUILDER.md          # Builder agent instructions
+├── PROMPT-VERIFIER.md         # Verifier agent instructions
+├── PROMPT-PLANNER.md          # Planner agent instructions
+├── SPEC.md                    # Project specification
+├── AGENTS.md                  # Project conventions & context
 └── .ralph/
     ├── loop-state.yaml        # Auto-generated state
     └── logs/                  # Auto-generated logs
 ```
+
+**PROMPT files at root level** - These are specialized agent instructions that explain the Ralph Loop workflow, system architecture, and how agents should collaborate. They include mermaid charts, decision trees, and detailed workflows.
 
 ## Implementation Features
 
@@ -177,25 +176,41 @@ MAX_FAILED_ATTEMPTS = 3    # Stop after consecutive failures
 SLEEP_BETWEEN_ITERATIONS = 2  # Seconds
 ```
 
-## Example PROMPT.md Structure
+## Specialized Agent Prompts
 
-**Builder PROMPT.md**:
-```markdown
-You are the builder. Your tasks:
-- Read TODO.md for pending work
-- Implement the next task
-- Write clean, tested code
-- Update TODO.md when complete
-```
+The skill includes **three specialized PROMPT.md files** at the project root:
 
-**Verifier PROMPT.md**:
-```markdown
-You are the verifier. Your tasks:
-- Run all tests
-- Check code quality
-- Verify requirements met
-- Report failures to builder
-```
+### PROMPT-BUILDER.md
+**Role:** Implementation agent focused on building code
+- **Mermaid charts:** Shows the build workflow and decision trees
+- **Lifecycle phases:** Discovery → Planning → Implementation → Completion
+- **Standards:** Code quality, testing requirements, TODO update rules
+- **Edge cases:** What to do when stuck, when to stop, how to communicate
+- **Output format:** Structured completion reports
+
+### PROMPT-VERIFIER.md
+**Role:** Quality assurance agent focused on validation
+- **Mermaid charts:** Multi-layer verification flow
+- **5 verification layers:** Functional tests → Code review → Spec compliance → Edge cases → Integration
+- **Failure patterns:** Common issues to catch and how to document them
+- **Report formats:** Detailed PASS/FAIL reports with evidence
+- **Standards:** What "production ready" means
+
+### PROMPT-PLANNER.md
+**Role:** Diagnostic and strategic planning agent
+- **Mermaid charts:** When planner is called and solution design flow
+- **Root cause analysis:** Framework for understanding why loops fail
+- **Solution patterns:** 5 common patterns (clarify, restructure, fix context, strategic)
+- **Decision framework:** When to split vs clarify, when to reorder, when to update spec
+- **Output format:** Investigation reports with specific TODO updates
+
+**Each prompt is 200+ lines** with:
+- Visual workflow diagrams
+- Decision trees
+- Checklists and templates
+- Common scenarios
+- Output formats
+- Critical rules (DO/DON'T)
 
 ## Notes
 

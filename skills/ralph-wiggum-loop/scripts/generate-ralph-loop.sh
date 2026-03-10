@@ -21,6 +21,11 @@ mkdir -p "$OUTPUT_DIR"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cp "$SCRIPT_DIR/ralph-loop-example.py" "$OUTPUT_DIR/ralph-loop.py"
 
+# Copy specialized agent prompts
+cp "$SCRIPT_DIR/../PROMPT-BUILDER.md" "$OUTPUT_DIR/PROMPT-BUILDER.md" 2>/dev/null || echo "Warning: PROMPT-BUILDER.md not found in skill directory"
+cp "$SCRIPT_DIR/../PROMPT-VERIFIER.md" "$OUTPUT_DIR/PROMPT-VERIFIER.md" 2>/dev/null || echo "Warning: PROMPT-VERIFIER.md not found in skill directory"
+cp "$SCRIPT_DIR/../PROMPT-PLANNER.md" "$OUTPUT_DIR/PROMPT-PLANNER.md" 2>/dev/null || echo "Warning: PROMPT-PLANNER.md not found in skill directory"
+
 # Create requirements.txt
 cat > "$OUTPUT_DIR/requirements.txt" <<'REQ'
 pyyaml
@@ -82,8 +87,24 @@ MAX_FAILED_ATTEMPTS = 3  # Stop after consecutive failures
 ## Required Files
 
 - `TODO.md` - Tasks to complete (uses `- [ ]` format)
-- `memory-bank/` - Agent instructions
+- `PROMPT-BUILDER.md` - Specialized builder agent instructions (copied from skill)
+- `PROMPT-VERIFIER.md` - Specialized verifier agent instructions (copied from skill)
+- `PROMPT-PLANNER.md` - Specialized planner agent instructions (copied from skill)
+- `SPEC.md` - Project specification (create this)
+- `AGENTS.md` - Project conventions and context (create this)
 - `.ralph/` - Loop state and logs (auto-created)
+
+## Agent Specialization
+
+Each PROMPT-*.md file contains:
+- **Mermaid charts** - Visual workflow diagrams
+- **Decision trees** - When and how to make decisions
+- **Detailed workflows** - Step-by-step processes with phases
+- **Common scenarios** - What to do in specific situations
+- **Output formats** - How to report completion/failure
+- **Critical rules** - DO and DON'T lists
+
+These are **specialized agents**, not generic assistants. Builder focuses on implementation. Verifier focuses on quality. Planner focuses on strategy.
 README
 
 chmod +x "$OUTPUT_DIR/ralph-loop.py"
