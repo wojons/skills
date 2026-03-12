@@ -1,6 +1,6 @@
 ---
 name: ralph-wiggum-loop
-description: Enterprise-grade AI-driven development workflow engine with plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+description: Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
 license: MIT
 compatibility: opencode
 metadata:
@@ -10,7 +10,205 @@ metadata:
 
 # Ralph Wiggum Loop - Enterprise Workflow Engine
 
-Build powerful AI-driven development workflows that iterate until tasks succeed. Features a plugin system, agent orchestration, monitoring, and enterprise-grade workflow patterns including DAGs, state machines, and circuit breakers.
+Build powerful AI-driven development workflows that iterate until tasks succeed. Features a **steering packet architecture** for real-time workflow control, plugin system, agent orchestration, monitoring, and enterprise-grade workflow patterns including DAGs, state machines, and circuit breakers.
+
+## Steering Packets: Core Architecture
+
+Ralph Loop uses **steering packets** to control agent workflows in real-time. Based on research from Microsoft Azure, AWS Step Functions, and AI orchestration patterns.
+
+### What are Steering Packets?
+
+Steering packets are structured state messages that carry:
+- **Workflow Context**: Current state, history, and trajectory
+- **Agent Instructions**: What to do, constraints, and success criteria  
+- **Control Signals**: Interrupt, redirect, pause, resume capabilities
+- **Fresh Evidence**: Real-time data from tools, APIs, and external systems
+
+```mermaid
+flowchart LR
+    A[Steering Packet] --> B[Workflow State]
+    A --> C[Agent Instructions]
+    A --> D[Control Signals]
+    A --> E[Fresh Evidence]
+    
+    B --> F[Current Phase]
+    B --> G[Iteration Count]
+    B --> H[Failure History]
+    
+    C --> I[Task Description]
+    C --> J[Success Criteria]
+    C --> K[Constraints]
+    
+    D --> L[Continue]
+    D --> M[Redirect]
+    D --> N[Pause]
+    D --> O[Interrupt]
+```
+
+### Steering Packet Structure
+
+```json
+{
+  "version": "2.0",
+  "timestamp": "2024-03-08T10:30:15Z",
+  "trace_id": "abc123-def456",
+  
+  "workflow": {
+    "name": "default",
+    "iteration": 5,
+    "phase": "building",
+    "state": "active",
+    "started_at": "2024-03-08T10:00:00Z"
+  },
+  
+  "control": {
+    "signal": "continue",
+    "priority": "normal",
+    "timeout": 7200,
+    "can_interrupt": true,
+    "can_redirect": true
+  },
+  
+  "context": {
+    "prior_thread": [
+      {"role": "system", "content": "..."},
+      {"role": "assistant", "content": "..."}
+    ],
+    "current_task": {
+      "id": "task-5",
+      "description": "Implement authentication",
+      "from_todo": "line 42",
+      "spec_ref": "section-4.2"
+    },
+    "completed_tasks": ["task-1", "task-2", "task-3", "task-4"],
+    "failure_history": [
+      {"task": "task-5", "attempt": 1, "error": "..."}
+    ]
+  },
+  
+  "evidence": {
+    "files_changed": ["src/auth.ts"],
+    "test_results": {"passed": 8, "failed": 2},
+    "logs": ["..."],
+    "metrics": {
+      "duration_ms": 45000,
+      "tokens_used": 15000
+    }
+  },
+  
+  "instructions": {
+    "primary": "Complete task-5: Implement JWT authentication",
+    "constraints": ["Use existing auth library", "Follow security best practices"],
+    "success_criteria": ["All auth tests pass", "No security vulnerabilities"],
+    "next_steps": ["Update TODO.md", "Write tests"]
+  }
+}
+```
+
+### Real-Time Steering Capabilities
+
+**Interrupt**: Stop current agent execution mid-flight
+```yaml
+control:
+  signal: interrupt
+  reason: "Human override"
+  preserve_context: true
+```
+
+**Redirect**: Change agent direction without restarting
+```yaml
+control:
+  signal: redirect
+  new_phase: planning
+  reason: "Implementation approach flawed"
+  keep_evidence: true
+```
+
+**Pause**: Suspend execution for human review
+```yaml
+control:
+  signal: pause
+  wait_for: human_approval
+  timeout: 86400
+```
+
+**Resume**: Continue from checkpoint
+```yaml
+control:
+  signal: resume
+  from_checkpoint: "iteration-5-phase-building"
+```
+
+### Message-Level Signaling
+
+Based on Microsoft Research on AI backend networks, Ralph Loop uses message-level signals to capture global workflow state:
+
+**Signal Types:**
+- `heartbeat`: Agent health check
+- `progress`: Percentage complete updates
+- `checkpoint`: State persistence point
+- `decision`: Branch point reached
+- `error`: Failure signal with context
+- `complete`: Task finished
+
+**Signal Flow:**
+```mermaid
+sequenceDiagram
+    participant O as Orchestrator
+    participant A as Agent
+    participant P as Plugin
+    
+    O->>A: steering_packet (signal: start)
+    A->>O: heartbeat (every 30s)
+    A->>O: progress (25%)
+    A->>P: checkpoint (save state)
+    P->>O: metrics_update
+    A->>O: decision (branch A vs B)
+    O->>A: steering_packet (signal: redirect, branch: B)
+    A->>O: progress (75%)
+    A->>O: complete (success)
+```
+
+### State Machine Transitions
+
+Steering packets enable explicit state transitions with guard conditions:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Planning: Start
+    Planning --> Building: Plan Complete
+    Building --> Verifying: Build Success
+    Building --> Planning: Build Failure [retries < 3]
+    Building --> HumanReview: Build Failure [retries >= 3]
+    
+    Verifying --> Complete: Verified
+    Verifying --> Building: Verification Failed
+    Verifying --> HumanReview: Critical Issue
+    
+    HumanReview --> Building: Rejected
+    HumanReview --> Verifying: Approved with Changes
+    HumanReview --> Complete: Approved
+    
+    Complete --> [*]
+```
+
+### Benefits of Steering Packets
+
+1. **Low-Latency Control**: Interrupt and redirect without losing context
+2. **State Persistence**: Recover from failures at exact checkpoint
+3. **Observability**: Every packet is logged and traceable
+4. **Flexibility**: Dynamic workflow adaptation
+5. **Reliability**: Circuit breaker integration at packet level
+6. **Human-in-the-Loop**: Pause and wait for human signals
+
+### Research Sources
+
+- Microsoft Azure: State machines in AI conversations and dynamic transitions
+- AWS Step Functions: State machine data and transitions
+- Ably: Realtime steering with low-latency control signals
+- Scale AI: State machines for structured workflows
+- AWS Strands: Steering agents for modern workflows
+- ArXiv SAGE: Steering dialog generation with state-action representations
 
 ## Quick Start
 
