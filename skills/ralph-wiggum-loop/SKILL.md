@@ -12,6 +12,38 @@ metadata:
 
 Build powerful AI-driven development workflows that iterate until tasks succeed. Features a **steering packet architecture** for real-time workflow control, plugin system, agent orchestration, monitoring, and enterprise-grade workflow patterns including DAGs, state machines, and circuit breakers.
 
+## Prompt Architecture Overview
+
+Ralph Loop uses **stacked markdowns** with a two-level architecture:
+
+### Level 1: System Context (Static - Always Loaded)
+- **AGENTS.md** - Global project context for ALL agents (tech stack, conventions, how to run)
+- **System Prompts** - Per-agent identity from config (who the agent is)
+- These are NOT modified during execution
+
+### Level 2: Steering Prompts (Dynamic - Modified Each Iteration)
+- **PROMPT.md** - Loaded by ALL agents (common execution context: current task, failures, evidence)
+- **PROMPT-BUILDER.md** - Loaded ONLY by builder (builder workflow guide)
+- **PROMPT-VERIFIER.md** - Loaded ONLY by verifier (verifier workflow guide)
+- **PROMPT-<name>.md** - Loaded ONLY by that agent role
+
+**How Stacking Works:**
+```
+Builder loads:  AGENTS.md + PROMPT.md + PROMPT-BUILDER.md
+Verifier loads: AGENTS.md + PROMPT.md + PROMPT-VERIFIER.md
+Planner loads:  AGENTS.md + PROMPT.md + PROMPT-PLANNER.md
+```
+
+**Key Principle:** 
+- PROMPT.md = steering context (CHANGES each iteration)
+- PROMPT-<name>.md = workflow guide (OCCASIONALLY updated)
+- AGENTS.md = global context (RARELY changes)
+- System prompts = agent identity (NEVER changes during loop)
+
+You steer by modifying PROMPT.md, NOT by changing system prompts.
+
+See `PROMPT_ARCHITECTURE.md` for complete details.
+
 ## Steering Packets: Core Architecture
 
 Ralph Loop uses **steering packets** to control agent workflows in real-time. Based on research from Microsoft Azure, AWS Step Functions, and AI orchestration patterns.
