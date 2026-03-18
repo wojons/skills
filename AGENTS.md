@@ -212,7 +212,7 @@ echo '{"status": "success", "data": "..."}'
 
 ## Available Skills
 
-This repository contains 62 skills organized into several categories:
+This repository contains 63 skills organized into several categories:
 
 ### Core Skills
 - **git-release**: Create consistent releases and changelogs from merged PRs
@@ -229,6 +229,9 @@ This repository contains 62 skills organized into several categories:
 ### Development Tools
 - **dependency-upgrade**: Comprehensive dependency analysis with breaking change detection and impact analysis
 - **code-migration**: Framework/library migration with incremental strategies and automated tools
+
+### Debugging
+- **sherlock-debugging**: Apply Sherlock Holmes' deductive method to debug code, diagnose system issues, and solve technical puzzles using systematic elimination and logical reasoning
 
 ### Performance Optimization
 - **performance-profiling**: Linux kernel-level (perf, eBPF, ftrace) and application-level profiling
