@@ -212,7 +212,7 @@ echo '{"status": "success", "data": "..."}'
 
 ## Available Skills
 
-This repository contains 64 skills organized into several categories:
+This repository contains 65 skills organized into several categories:
 
 ### Core Skills
 - **git-release**: Create consistent releases and changelogs from merged PRs
@@ -301,6 +301,7 @@ This repository contains 64 skills organized into several categories:
 - **trust-but-verify**: Verify system claims and test results through independent validation
 - **assumption-testing**: Identify, document, and explicitly test implicit assumptions
 - **reality-validation**: Compare system behavior against real-world expectations
+- **completeness-validator**: Validate true completion vs superficial "done" using multilingual completion semantics to ensure code is wired up, tested, and production-ready
 
 #### Adversarial Thinking
 - **devils-advocate**: Challenge ideas, assumptions, and decisions by playing devil's advocate
