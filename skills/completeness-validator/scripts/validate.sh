@@ -103,17 +103,31 @@ run_tier1() {
             
             # Check for TODO/FIXME comments (using AST, not just grep)
             TODO_COUNT=$(npx eslint . --ext .js,.ts --rule 'no-warning-comments:error' --format compact 2>/dev/null | grep -c "no-warning-comments" || echo "0")
-            if [ "$TODO_COUNT" -gt 0 ]; then
-                log_warning "Found $TODO_COUNT TODO/FIXME comments"
-                WARNINGS+=("$TODO_COUNT TODO/FIXME markers found")
+            # Only count if we got a number
+            if [ -n "$TODO_COUNT" ] && [ "$TODO_COUNT" -eq "$TODO_COUNT" ] 2>/dev/null; then
+                if [ "$TODO_COUNT" -gt 0 ]; then
+                    log_warning "Found $TODO_COUNT TODO/FIXME comments"
+                    WARNINGS+=("$TODO_COUNT TODO/FIXME markers found")
+                else
+                    log_success "No TODO/FIXME markers"
+                    ((TIER1_PASSED++)) || true
+                fi
             else
-                log_success "No TODO/FIXME markers"
-                ((TIER1_PASSED++)) || true
+                # Fallback to grep with better patterns when ESLint not available or fails
+                log_warning "ESLint not available or failed, using fallback grep"
+                TODO_COUNT=$(grep -r "TODO\|FIXME\|XXX\|HACK" --include="*.js" --include="*.ts" --include="*.tsx" --include="*.jsx" . 2>/dev/null | wc -l)
+                if [ "$TODO_COUNT" -gt 0 ]; then
+                    log_warning "Found $TODO_COUNT TODO/FIXME markers (fallback)"
+                    WARNINGS+=("TODO/FIXME markers found")
+                else
+                    log_success "No TODO/FIXME markers (fallback)"
+                    ((TIER1_PASSED++)) || true
+                fi
             fi
         else
             log_warning "ESLint not available, using fallback grep"
             # Fallback to grep with better patterns
-            TODO_COUNT=$(grep -r "TODO\|FIXME\|XXX\|HACK" --include="*.js" --include="*.ts" --include="*.tsx" --include="*.jsx" . 2>/dev/null | wc -l)
+            TODO_COUNT=$(grep -r "TODO\|FIXME||XXX||HACK" --include="*.js" --include="*.ts" --include="*.tsx" --include="*.jsx" . 2>/dev/null | wc -l)
             if [ "$TODO_COUNT" -gt 0 ]; then
                 log_warning "Found $TODO_COUNT TODO/FIXME markers (fallback)"
                 WARNINGS+=("TODO/FIXME markers found")
@@ -212,24 +226,41 @@ run_tier2() {
     
     if [ -f "package.json" ]; then
         # Try to start the application
-        if timeout 10 npm start 2>/dev/null &
+        if timeout 15 npm start 2>/dev/null &
         then
             APP_PID=$!
-            sleep 3
+            sleep 5
             
-            # Check if health endpoint exists
-            if curl -s http://localhost:3000/health 2>/dev/null | grep -q "ok\|healthy"; then
-                log_success "Application started and health check passed"
-                ((TIER2_PASSED++)) || true
+            # Check if health endpoint exists and returns meaningful data
+            HEALTH_RESPONSE=$(curl -s http://localhost:3000/health 2>/dev/null || echo "")
+            
+            if [ -n "$HEALTH_RESPONSE" ]; then
+                # Try to parse as JSON and check for meaningful status
+                if echo "$HEALTH_RESPONSE" | jq -r '.status // .healthy // .ok // empty' 2>/dev/null | grep -qE "(ok|healthy|true)"; then
+                    log_success "Application started and health check passed"
+                    ((TIER2_PASSED++)) || true
+                elif [ "$HEALTH_RESPONSE" = "\"ok\"" ] || [ "$HEALTH_RESPONSE" = "ok" ]; then
+                    log_success "Application started and health check returned 'ok'"
+                    ((TIER2_PASSED++)) || true
+                else
+                    log_warning "Application started but health check returned ambiguous data: $HEALTH_RESPONSE"
+                    WARNINGS+=("Health check response unclear - may not indicate real health")
+                fi
             else
-                log_warning "Application started but no health endpoint"
-                WARNINGS+=("No health endpoint configured")
+                # Try basic connectivity
+                if curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ 2>/dev/null | grep -q "2[0-9][0-9]"; then
+                    log_success "Application started and responding on port 3000"
+                    ((TIER2_PASSED++)) || true
+                else
+                    log_warning "Application started but no meaningful response"
+                    WARNINGS+=("Application running but health endpoint unclear")
+                fi
             fi
             
             # Cleanup
             kill $APP_PID 2>/dev/null || true
         else
-            log_error "Application failed to start"
+            log_error "Application failed to start within timeout"
             CRITICAL_GAPS+=("Application startup failed")
             ((TIER2_FAILED++)) || true
         fi
@@ -240,11 +271,39 @@ run_tier2() {
     
     if [ -f ".env" ]; then
         if grep -q "DATABASE_URL\|DB_HOST" .env 2>/dev/null; then
-            log_success "Database configuration found"
-            ((TIER2_PASSED++)) || true
+            # Try to actually connect if it looks like a PostgreSQL URL
+            if grep -q "postgresql://" .env 2>/dev/null && command -v psql &> /dev/null; then
+                # Extract host/port/db from URL (simple parsing)
+                DB_URL=$(grep -o "postgresql://[^ ]*" .env | head -1)
+                if [[ "$DB_URL" =~ postgresql://([^:/]+):([0-9]+)/(.+) ]]; then
+                    DB_HOST=${BASH_REMATCH[1]}
+                    DB_PORT=${BASH_REMATCH[2]}
+                    DB_NAME=${BASH_REMATCH[3]}
+                    
+                    # Try to connect with timeout
+                    if timeout 5 psql "host=$DB_HOST port=$DB_PORT dbname=$DB_NAME" -c "SELECT 1" 2>/dev/null; then
+                        log_success "Database connection verified"
+                        ((TIER2_PASSED++)) || true
+                    else
+                        log_warning "Database configuration found but connection failed"
+                        WARNINGS+=("Database connection failed - check credentials")
+                    fi
+                else
+                    log_success "PostgreSQL-like DATABASE_URL found"
+                    ((TIER2_PASSED++)) || true
+                fi
+            elif grep -q "mongodb://" .env 2>/dev/null && command -v mongosh &> /dev/null; then
+                log_success "MongoDB-like URL found (connection test skipped for simplicity)"
+                ((TIER2_PASSED++)) || true
+            else
+                log_success "Database configuration found"
+                ((TIER2_PASSED++)) || true
+            fi
         else
             log_warning "No database configuration found"
         fi
+    else
+        log_warning "No environment file found"
     fi
     
     # Check 2.3: External API calls

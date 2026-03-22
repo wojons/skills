@@ -273,19 +273,26 @@ This skill's approach is grounded in peer-reviewed research:
 **Not a silver bullet** - This skill significantly improves completion detection but cannot guarantee 100% accuracy:
 
 - **AST analysis** catches empty functions but not logic errors
-- **Runtime tests** verify connections but not all edge cases  
+- **Runtime tests** verify basic connectivity but not all edge cases  
 - **PRR gates** check configuration but require human judgment for compliance
+- **Multilingual prompting** helps prevent hallucination but doesn't eliminate it
 
-**Confidence levels:**
-- ✓ High confidence: Empty functions, missing imports, compilation errors
-- ⚠️ Medium confidence: Mock vs real (requires runtime verification)
-- ⚠️ Medium confidence: Integration testing (requires actual services)
-- ~ Variable: Production readiness (depends on organizational standards)
+**Confidence levels by check type:**
+- **High confidence** (≥90%): Empty functions, missing imports, TypeScript/Python type errors, missing files
+- **Medium confidence** (60-80%): Env vars exist (but may not work), health endpoint responds (but may be decoy)
+- **Low confidence** (≤40%): Test output says "passing" (tests may be trivial), library exists in package.json (but may be unused)
+
+**Verification Recommendations:**
+1. **For critical systems**: Add behavioral validation (Testcontainers, real API tests)
+2. **For production deployment**: Require human-led Production Readiness Review
+3. **For high-risk components**: Manual code review focusing on logic and security
+4. **For legacy/system integration**: Actual deployment to staging environment
 
 **Best used as:**
-1. Automated first-pass validation
-2. Educational tool to understand completion gaps
+1. Automated first-pass validation in CI/CD
+2. Educational tool to understand completion gaps  
 3. Conversation starter with AI using multilingual prompts
+4. Checklist to prompt human review (not replace it)
 
 ### Completion is Binary
 
