@@ -212,7 +212,7 @@ echo '{"status": "success", "data": "..."}'
 
 ## Available Skills
 
-This repository contains 63 skills organized into several categories:
+This repository contains 64 skills organized into several categories:
 
 ### Core Skills
 - **git-release**: Create consistent releases and changelogs from merged PRs
@@ -242,6 +242,7 @@ This repository contains 63 skills organized into several categories:
 ### Documentation
 - **api-documentation**: Generate comprehensive API documentation for REST/HTTP, gRPC, GraphQL, and RPC APIs
 - **exhaustive-specification**: Write exhaustive specifications for autonomous AI systems that leave nothing to chance, covering every detail from UI to database schemas with adversarial refinement
+- **data-flow-architect**: Design and document comprehensive data flow architectures across systems, services, networks, databases, and protocols using systematic methodology
 
 ### Cloud Management
 - **cloud-cost-optimization**: Analyze and optimize cloud costs across multiple cloud providers (AWS, Azure, GCP)
