@@ -212,7 +212,7 @@ echo '{"status": "success", "data": "..."}'
 
 ## Available Skills
 
-This repository contains 65 skills organized into several categories:
+This repository contains 67 skills organized into several categories:
 
 ### Core Skills
 - **git-release**: Create consistent releases and changelogs from merged PRs
@@ -225,6 +225,7 @@ This repository contains 65 skills organized into several categories:
 - **best-practice-guide**: Analyze project documentation to identify missing context, then generate and store best practice guides using web search when available
 - **workflow-orchestrator**: Build and orchestrate AI-driven development workflows (Ralph loops) that iterate until success using configurable patterns and multi-agent coordination
 - **dogfooding**: Test and validate the skills repository using the skills system itself, practicing "eating your own dog food"
+- **baby-steps**: Core operational directive for incremental development using the Baby Steps Methodology - break work into smallest possible meaningful changes with validation at every step
 
 ### Development Tools
 - **dependency-upgrade**: Comprehensive dependency analysis with breaking change detection and impact analysis
@@ -243,6 +244,7 @@ This repository contains 65 skills organized into several categories:
 - **api-documentation**: Generate comprehensive API documentation for REST/HTTP, gRPC, GraphQL, and RPC APIs
 - **exhaustive-specification**: Write exhaustive specifications for autonomous AI systems that leave nothing to chance, covering every detail from UI to database schemas with adversarial refinement
 - **data-flow-architect**: Design and document comprehensive data flow architectures across systems, services, networks, databases, and protocols using systematic methodology
+- **notebooklm-federated-specs**: Manage federated specification files merged into NotebookLM notebooks for token-efficient context access during planning and decision-making
 
 ### Cloud Management
 - **cloud-cost-optimization**: Analyze and optimize cloud costs across multiple cloud providers (AWS, Azure, GCP)
