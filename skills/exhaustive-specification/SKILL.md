@@ -315,6 +315,92 @@ Pre-defined templates for each spec type ensure nothing is missed.
 | Q03 | Acceptance Criteria | Definition of done | `templates/q03-acceptance-criteria.md` |
 | Q04 | Quality Gates | Review checkpoints | `templates/q04-quality-gates.md` |
 
+### Tier 9: Integration Specs
+
+| ID | Spec Type | Purpose | Template File |
+|----|-----------|---------|---------------|
+| I01 | Third-Party Integrations | External service contracts, SLAs | `templates/i01-integrations.md` |
+| I02 | API Versioning | Version strategy, deprecation policy | `templates/i02-api-versioning.md` |
+| I03 | Feature Flags | Rollout strategies, kill switches | `templates/i03-feature-flags.md` |
+| I04 | Webhook Receivers | Inbound webhooks, verification | `templates/i04-webhook-receivers.md` |
+| I05 | Event Schema Registry | Event schemas, versioning | `templates/i05-event-schema.md` |
+
+### Tier 10: Mobile Specs
+
+| ID | Spec Type | Purpose | Template File |
+|----|-----------|---------|---------------|
+| M01 | Mobile Overview | Platform-specific considerations | `templates/m01-mobile-overview.md` |
+| M02 | Mobile Navigation | Screen flows, gestures | `templates/m02-mobile-navigation.md` |
+| M03 | Mobile Components | Native UI components | `templates/m03-mobile-components.md` |
+| M04 | Mobile Offline | Sync strategies, conflict resolution | `templates/m04-mobile-offline.md` |
+| M05 | Push Notifications | Push specs, delivery handling | `templates/m05-push-notifications.md` |
+
+### Tier 11: AI/ML Specs
+
+| ID | Spec Type | Purpose | Template File |
+|----|-----------|---------|---------------|
+| AI01 | Model Cards | Model purpose, limitations, biases | `templates/ai01-model-cards.md` |
+| AI02 | Training Pipelines | Data ingestion, preprocessing | `templates/ai02-training-pipelines.md` |
+| AI03 | Model Serving | Inference endpoints, versioning | `templates/ai03-model-serving.md` |
+| AI04 | Feature Engineering | Feature definitions, transformations | `templates/ai04-feature-engineering.md` |
+| AI05 | Model Monitoring | Drift detection, retraining triggers | `templates/ai05-model-monitoring.md` |
+
+### Tier 12: DevOps/SRE Specs
+
+| ID | Spec Type | Purpose | Template File |
+|----|-----------|---------|---------------|
+| SRE01 | SLIs/SLOs/SLAs | Service level definitions | `templates/sre01-slo.md` |
+| SRE02 | Incident Management | Incident response procedures | `templates/sre02-incidents.md` |
+| SRE03 | On-Call Procedures | On-call rotation, escalation | `templates/sre03-oncall.md` |
+| SRE04 | Chaos Engineering | Failure injection, resilience tests | `templates/sre04-chaos.md` |
+| SRE05 | Capacity Planning | Growth projections, scaling | `templates/sre05-capacity.md` |
+
+### Tier 13: Localization Specs
+
+| ID | Spec Type | Purpose | Template File |
+|----|-----------|---------|---------------|
+| L01 | Locale Support | Supported locales, fallback chains | `templates/l01-locale-support.md` |
+| L02 | String Management | Translation keys, placeholders | `templates/l02-string-management.md` |
+| L03 | Cultural Adaptation | Date/time formats, RTL support | `templates/l03-cultural-adaptation.md` |
+| L04 | Content Localization | Images, colors, cultural considerations | `templates/l04-content-localization.md` |
+
+### Tier 14: Data Engineering Specs
+
+| ID | Spec Type | Purpose | Template File |
+|----|-----------|---------|---------------|
+| DE01 | Data Pipelines | ETL/ELT workflows | `templates/de01-data-pipelines.md` |
+| DE02 | Data Quality | Validation, cleansing, profiling | `templates/de02-data-quality.md` |
+| DE03 | Data Lineage | Source tracking, impact analysis | `templates/de03-data-lineage.md` |
+| DE04 | Data Governance | Data catalog, ownership, retention | `templates/de04-data-governance.md` |
+| DE05 | Caching Strategy | Cache levels, invalidation, TTL | `templates/de05-caching-strategy.md` |
+
+### Tier 15: Real-Time Specs
+
+| ID | Spec Type | Purpose | Template File |
+|----|-----------|---------|---------------|
+| RT01 | WebSocket Connections | Connection lifecycle, auth | `templates/rt01-websockets.md` |
+| RT02 | Real-Time Events | Event types, subscriptions | `templates/rt02-realtime-events.md` |
+| RT03 | Presence & Status | Online/offline, typing indicators | `templates/rt03-presence.md` |
+| RT04 | Collaboration | Concurrent editing, conflict resolution | `templates/rt04-collaboration.md` |
+
+### Tier 16: Analytics Specs
+
+| ID | Spec Type | Purpose | Template File |
+|----|-----------|---------|---------------|
+| AN01 | Event Tracking | User events, metrics definition | `templates/an01-event-tracking.md` |
+| AN02 | User Analytics | Behavior tracking, funnels | `templates/an02-user-analytics.md` |
+| AN03 | Business Metrics | KPIs, reporting requirements | `templates/an03-business-metrics.md` |
+| AN04 | Dashboards | Metric visualization, alerts | `templates/an04-dashboards.md` |
+
+### Tier 17: Security Enhanced Specs
+
+| ID | Spec Type | Purpose | Template File |
+|----|-----------|---------|---------------|
+| SEC01 | Threat Modeling | STRIDE analysis, attack surfaces | `templates/sec01-threat-modeling.md` |
+| SEC02 | Secrets Management | Key rotation, scope, storage | `templates/sec02-secrets-management.md` |
+| SEC03 | Compliance Mapping | GDPR, HIPAA, SOC 2 requirements | `templates/sec03-compliance.md` |
+| SEC04 | Audit Trail | Immutable logs, retention | `templates/sec04-audit-trail.md` |
+
 ## Workflow
 
 ### Phase 1: Initialize
