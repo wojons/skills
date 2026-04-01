@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# skill-builder
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Build basic to intermediate Agent Skills using structured templates and validation tools
 
 ## Overview
 
-Category: **workflow**
+Category: **development**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill skill-builder
 ```
 
 ## License

@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# log-analysis-parsing
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Parse, analyze, search, and extract insights from logs using various techniques including regex, parsing engines, and log analysis tools
 
 ## Overview
 
-Category: **workflow**
+Category: **observability**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill log-analysis-parsing
 ```
 
 ## License

@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# log-management-system
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Implement comprehensive log management including rotation, retention, forwarding, aggregation, storage, and lifecycle management
 
 ## Overview
 
-Category: **workflow**
+Category: **observability**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill log-management-system
 ```
 
 ## License

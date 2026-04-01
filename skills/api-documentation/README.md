@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# api-documentation
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Use when you need to generate comprehensive API documentation for REST/HTTP, gRPC, GraphQL, and RPC APIs
 
 ## Overview
 
-Category: **workflow**
+Category: **documentation**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill api-documentation
 ```
 
 ## License

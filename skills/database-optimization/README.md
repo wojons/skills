@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# database-optimization
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Use when you need to optimize database performance, schema design, indexing, and query performance across different database systems
 
 ## Overview
 
-Category: **workflow**
+Category: **database**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill database-optimization
 ```
 
 ## License

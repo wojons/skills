@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# exhaustive-specification
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Write exhaustive specifications for autonomous AI systems that leave nothing to chance, covering every detail from UI to database schemas with adversarial refinement
 
 ## Overview
 
-Category: **workflow**
+Category: **documentation**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill exhaustive-specification
 ```
 
 ## License

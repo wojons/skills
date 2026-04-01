@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# performance-profiling
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Analyze system and application performance using Linux kernel-level tools (perf, ftrace, eBPF, SystemTap) and application-level profiling to identify bottlenecks and optimize performance
 
 ## Overview
 
-Category: **workflow**
+Category: **performance**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill performance-profiling
 ```
 
 ## License

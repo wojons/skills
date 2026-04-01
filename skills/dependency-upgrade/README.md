@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# dependency-upgrade
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Analyze and safely upgrade dependencies with breaking change detection, version compatibility checks, impact analysis, and migration planning
 
 ## Overview
 
-Category: **workflow**
+Category: **maintenance**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill dependency-upgrade
 ```
 
 ## License

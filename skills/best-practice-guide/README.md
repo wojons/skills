@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# best-practice-guide
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Analyze project documentation to identify missing context, then generate and store best practice guides using web search when available
 
 ## Overview
 
-Category: **workflow**
+Category: **documentation**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill best-practice-guide
 ```
 
 ## License

@@ -1,6 +1,6 @@
-# ralph-wiggum-loop
+# ai-collab-dev
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+A 10-step methodology for building software with AI collaboration - from north star through automated Ralph loop execution with zero human-in-the-loop code writing
 
 ## Overview
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill ai-collab-dev
 ```
 
 ## License

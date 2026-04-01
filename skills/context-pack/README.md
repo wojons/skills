@@ -1,6 +1,6 @@
-# ralph-wiggum-loop
+# context-pack
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Pack codebases, folders, or ZIP archives into LLM-friendly context format with smart filtering, file selection, and markdown structure
 
 ## Overview
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill context-pack
 ```
 
 ## License

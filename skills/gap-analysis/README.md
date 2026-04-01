@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# gap-analysis
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Identify discrepancies between documented requirements and actual implementation through systematic comparison and analysis
 
 ## Overview
 
-Category: **workflow**
+Category: **analysis**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill gap-analysis
 ```
 
 ## License

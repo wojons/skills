@@ -1,10 +1,10 @@
-# ralph-wiggum-loop
+# white-hat
 
-Enterprise-grade AI-driven development workflow engine with steering packet architecture for real-time control, plugin system, agent orchestration, monitoring, and complex workflow patterns. Build-verify loops that iterate until success.
+Build defensive security capabilities, implement security by design, and practice ethical hacking to protect systems proactively
 
 ## Overview
 
-Category: **workflow**
+Category: **security**
 
 ## When to Use
 
@@ -16,7 +16,7 @@ See [SKILL.md](./SKILL.md) for the full documentation including:
 ## Installation
 
 ```bash
-npx skills add wojons/skills --skill ralph-wiggum-loop
+npx skills add wojons/skills --skill white-hat
 ```
 
 ## License
