@@ -1,0 +1,59 @@
+#!/bin/bash
+#
+# Pre-commit hook to verify all skills have README.md files
+# This file should be copied to .git/hooks/pre-commit
+#
+# To install: bash scripts/setup-git-hooks.sh
+
+set -e
+
+echo "Checking skills for required files..."
+
+SKILLS_DIR="skills"
+MISSING_FILES=()
+CHECKED_SKILLS=0
+
+# Find all skill directories
+for skill_dir in "$SKILLS_DIR"/*/; do
+    # Skip if not a directory
+    [[ ! -d "$skill_dir" ]] && continue
+    
+    skill_name=$(basename "$skill_dir")
+    ((CHECKED_SKILLS++))
+    
+    # Check for SKILL.md
+    if [[ ! -f "${skill_dir}SKILL.md" ]]; then
+        MISSING_FILES+=("${skill_dir}SKILL.md")
+    fi
+    
+    # Check for README.md
+    if [[ ! -f "${skill_dir}README.md" ]]; then
+        MISSING_FILES+=("${skill_dir}README.md")
+    fi
+done
+
+# Report results
+if [[ ${#MISSING_FILES[@]} -eq 0 ]]; then
+    echo "✓ All $CHECKED_SKILLS skills have required files (SKILL.md, README.md)"
+    exit 0
+fi
+
+# Block commit with details
+echo ""
+echo "❌ Missing required files detected:"
+echo ""
+
+for file in "${MISSING_FILES[@]}"; do
+    echo "   Missing: $file"
+done
+
+echo ""
+echo "Every skill must have:"
+echo "  - SKILL.md  (skill definition, required)"
+echo "  - README.md (quick overview, required)"
+echo ""
+echo "To fix:"
+echo "  bash scripts/generate-readmes.sh"
+echo ""
+echo "Commit blocked until all required files are present."
+exit 1
